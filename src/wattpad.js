@@ -3,8 +3,7 @@ const wp = axios.create({
 	headers: {
 		Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
 		Cookie: 'lang=1; locale=en_US; wp_id=04d53990-6919-4b2b-9053-29ada5b3b44d; fs__exp=1; sn__time=j:null; adMetrics=0; _pbeb_=0; ff=1; dpr=2; tz=-8; signupFrom=search; prSu=true;',
-		'User-Agent':
-			'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.22 Safari/537.36',
+		'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.22 Safari/537.36',
 	},
 });
 const lib = require('./lib');
@@ -119,19 +118,12 @@ WattPads.prototype.search = async function search() {
 	let query = typeof arguments[0] === 'string' ? arguments[0] : '';
 	if (!query && this.options['query']) query = this.options['query'];
 	this.options['query'] = query;
-	if (
-		query.match(this.RegExp['BASEURL']) ||
-		(this.options['url'] && this.options['url'].match(this.RegExp['BASEURL']))
-	) {
+	if (query.match(this.RegExp['BASEURL']) || (this.options['url'] && this.options['url'].match(this.RegExp['BASEURL']))) {
 		query = query || this.options['url'];
 		if (!this.RegExp['search'].test(query)) throw new URIError('Invalid WattPad [search] URI!');
 		this.options['url'] = query;
 	}
-	if (
-		typeof arguments[2] === 'object' ||
-		typeof arguments[1] === 'object' ||
-		typeof arguments[0] === 'object'
-	) {
+	if (typeof arguments[2] === 'object' || typeof arguments[1] === 'object' || typeof arguments[0] === 'object') {
 		let thisArguments = arguments[2] || arguments[1] || arguments[0];
 		if (Array.isArray(thisArguments) || thisArguments === null) this;
 		typeof thisArguments === 'object' ? this.set(thisArguments) : '';
@@ -141,12 +133,7 @@ WattPads.prototype.search = async function search() {
 	return new Promise((resolve, reject) => {
 		lib.search(wp, this.BASEURL, this.options)
 			.then((response) => {
-				fn =
-					typeof arguments[1] === 'function'
-						? arguments[1]
-						: typeof arguments[0] === 'function'
-						? arguments[0]
-						: fn;
+				fn = typeof arguments[1] === 'function' ? arguments[1] : typeof arguments[0] === 'function' ? arguments[0] : fn;
 				fn(null, response, this.options);
 				resolve(response);
 			})
@@ -172,30 +159,19 @@ WattPads.prototype.detail = async function () {
 	let detail = typeof arguments[0] === 'string' ? arguments[0] : '';
 	if (!detail && this.options['detail']) detail = this.options['detail'];
 	this.options['detail'] = detail;
-	if (
-		typeof arguments[2] === 'object' ||
-		typeof arguments[1] === 'object' ||
-		typeof arguments[0] === 'object'
-	) {
+	if (typeof arguments[2] === 'object' || typeof arguments[1] === 'object' || typeof arguments[0] === 'object') {
 		let thisArguments = arguments[2] || arguments[1] || arguments[0];
 		if (Array.isArray(thisArguments) || thisArguments === null) this;
 		typeof thisArguments === 'object' ? this.set(thisArguments) : '';
 		detail = thisArguments['detail'] ? thisArguments['detail'] : '';
 	}
-	if (!this.options['detail'] && !arguments[0])
-		throw new Error('arguments at position [0] must be fill in!');
+	if (!this.options['detail'] && !arguments[0]) throw new Error('arguments at position [0] must be fill in!');
 	if (!detail || !this.options['detail']) throw new Error('please fill in detail[url] parameter!');
-	if (!this.RegExp['detail'].test(this.options['detail']))
-		throw new URIError('Invalid WattPad [story] URI');
+	if (!this.RegExp['detail'].test(this.options['detail'])) throw new URIError('Invalid WattPad [story] URI');
 	return new Promise(async (resolve, reject) => {
 		lib.detail(wp, this.options, this.BASEURL)
 			.then((response) => {
-				fn =
-					typeof arguments[1] === 'function'
-						? arguments[1]
-						: typeof arguments[0] === 'function'
-						? arguments[0]
-						: fn;
+				fn = typeof arguments[1] === 'function' ? arguments[1] : typeof arguments[0] === 'function' ? arguments[0] : fn;
 				fn(null, response, this.options);
 				resolve(response);
 			})
@@ -220,31 +196,20 @@ WattPads.prototype.stories = async function () {
 	this.methods['stories'] = this.stories;
 	let stories = typeof arguments[0] === 'string' ? arguments[0] : '';
 	if (!stories && this.options['stories']) stories = this.options['stories'];
-	if (
-		typeof arguments[2] === 'object' ||
-		typeof arguments[1] === 'object' ||
-		typeof arguments[0] === 'object'
-	) {
+	if (typeof arguments[2] === 'object' || typeof arguments[1] === 'object' || typeof arguments[0] === 'object') {
 		let thisArguments = arguments[2] || arguments[1] || arguments[0];
 		if (Array.isArray(thisArguments) || thisArguments === null) this;
 		typeof thisArguments === 'object' ? this.set(thisArguments) : '';
 		stories = thisArguments['stories'] ? thisArguments['stories'] : '';
 	}
 	this.options['stories'] = stories;
-	if (!this.options['stories'] && !arguments[0])
-		throw new Error('arguments at position [0] must be fill in!');
+	if (!this.options['stories'] && !arguments[0]) throw new Error('arguments at position [0] must be fill in!');
 	if (!stories || !this.options['stories']) throw new Error('please fill in stories[url] parameter!');
-	if (!this.RegExp['stories'].test(this.options['stories']))
-		throw new URIError('Invalid WattPad stories[story] URI');
+	if (!this.RegExp['stories'].test(this.options['stories'])) throw new URIError('Invalid WattPad stories[story] URI');
 	return new Promise((resolve, reject) => {
 		lib.stories(wp, this.options)
 			.then((response) => {
-				fn =
-					typeof arguments[1] === 'function'
-						? arguments[1]
-						: typeof arguments[0] === 'function'
-						? arguments[0]
-						: fn;
+				fn = typeof arguments[1] === 'function' ? arguments[1] : typeof arguments[0] === 'function' ? arguments[0] : fn;
 				fn(null, response, this.options);
 				resolve(response);
 			})

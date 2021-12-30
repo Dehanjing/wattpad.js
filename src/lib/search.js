@@ -11,8 +11,7 @@ module.exports = function wattpadSearch(wp, BASEURL, options, hasil = []) {
 	if (options.hasOwnProperty('url')) BASEURL = options['url'];
 	if (options.hasOwnProperty('getIndexes')) {
 		getIndexes = parseInt(options.getIndexes) || 0;
-		if (isNaN(getIndexes))
-			throw new TypeError('getIndexes must be typeof number but given input of ' + getIndexes);
+		if (isNaN(getIndexes)) throw new TypeError('getIndexes must be typeof number but given input of ' + getIndexes);
 	}
 	return new Promise((resolve, reject) => {
 		wp.get(BASEURL)
@@ -29,10 +28,7 @@ module.exports = function wattpadSearch(wp, BASEURL, options, hasil = []) {
 					}
 					if (getIndexes > hasil.length)
 						throw new RangeError(
-							'could not find wattpad story at index position ' +
-								getIndexes +
-								' from result length ' +
-								hasil.length
+							'could not find wattpad story at index position ' + getIndexes + ' from result length ' + hasil.length
 						);
 					return resolve({
 						status: response.status,
@@ -70,10 +66,7 @@ module.exports = function wattpadSearch(wp, BASEURL, options, hasil = []) {
 				}
 				if (getIndexes > hasil.length)
 					throw new RangeError(
-						'could not find wattpad story at index position ' +
-							getIndexes +
-							' from result length ' +
-							hasil.length
+						'could not find wattpad story at index position ' + getIndexes + ' from result length ' + hasil.length
 					);
 				return resolve({
 					status: response.status,

@@ -11,10 +11,49 @@ wattpad.set({
    detail: WattPads.validURI.detail, // get full information of stories
    stories: WattPads.validURI.stories, // stories required option!
 });
-// 2. only set query use .setQuery("string")
+// 2. set key and value use .set("key", "value")
+wattpad.set("query", "fury");
+// 3. only set query use .setQuery("string")
 wattpad.setQuery("fury");
-// 3. set specific options use .setOptions({ object:"Object" })
-wattpad.setOptions({ url: "https://www.wattpad.com/search/fury" })
+// 4. set specific options use .setOptions({ object:"Object" })
+wattpad.setOptions({ url: "https://www.wattpad.com/search/fury" });
+
+// TODO: list of wattpad url
+
+console.log(wattpad.validURI);
+/*
+   output:
+   {
+      BASEURL: 'https://www.wattpad.com/',
+      search: 'https://www.wattpad.com/search/naruto',
+      url: 'https://www.wattpad.com/search/naruto',
+      detail: 'https://www.wattpad.com/story/232343303',
+      stories: 'https://www.wattpad.com/632122261'
+   }
+*/
+
+// TODO: example of search method
+
+wattpad.set({
+   query: "fury" // set option for query <string|required>
+});
+wattpad.search((error, response, options) => {
+   if (error) return console.error(error.stack);
+   console.log(response, options);
+});
+
+// TODO: example of detail method
+
+wattpad.detail((error, response, options) => {
+   if (error) return console.error(error.stack);
+   console.log(response, options);
+}, { detail: "https://www.wattpad.com/story/232343303" });
+
+// TODO: example of stories method
+
+wattpad.stories("https://www.wattpad.com/917284601-naruto-life-sadness")
+.then((response) => console.log(response))
+.catch((error) => console.error(error.stack));
 
 // TODO: example of method request
 
@@ -69,4 +108,24 @@ wattpad.stories("https://www.wattpad.com/632122261", function(error, response, o
 // a. last arguments only for options after first[string] & second[function] arguments fill in
 wattpad.search("https://www.wattpad.com/search/naruto", () => {}, {
    getIndexes: 3
+});
+
+// TODO: Example chain promise to get stories content!
+
+wattpad.search("fury", {
+   getIndexes: 2
+})
+.then(({ result }) => wattpad.detail(result.url))
+.then(({ result }) => wattpad.stories(result.tableOfContents.firstContent))
+.then(async (response) => {
+   let partOne = response.result;
+   console.log("first part - story " + partOne.story, partOne);
+   let partTwo = partOne.next();
+   console.log("second parts - story " + partTwo.result.story, partTwo);
+   let partThree = partTwo.result.next();
+   console.log("third parts - story " + partThree.result.story, partThree);
+   let previous = await response.result.previous(); // get previous part
+   console.log("previous part of current part", previous);
+   let next = await response.result.next(); // get next part
+   console.log("next part of current part", next);
 });

@@ -1,38 +1,14 @@
 const getContent = require('./getContent');
+let previousContent = require('./previousContent');
 
 const parseContent = (wp, nextPageUrl, options) => async () => {
-	let { status, result } = await getContent(wp, nextPageUrl);
-	if (result.nextPage) {
-		let nextPage = result.nextPage;
-		let nextContents = nextContent(wp, result.nextPage, options);
-		delete result.nextPage;
-		return {
-			status: status,
-			options: options,
-			result: {
-				...result,
-				next: {
-					page: nextPage,
-					hasNext: true,
-					content: nextContents,
-				},
-			},
-		};
-	} else {
-		delete result.nextPage;
-		return {
-			status: status,
-			options: options,
-			result: {
-				...result,
-				next: {
-					page: 'Last Part!',
-					hasNext: false,
-					content: () => 'this is the last parts of wattpad ' + pageContent.story,
-				},
-			},
-		};
-	}
+	return new Promise((resolve, reject) => {
+		getContent(wp, nextPageUrl, options, nextContent)
+			.then((response) => {
+				return resolve(response);
+			})
+			.catch((error) => console.log(error));
+	});
 };
 
 function nextContent(wp, nextPageUrl, options) {

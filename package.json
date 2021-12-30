@@ -1,10 +1,10 @@
 {
    "name": "@dhnapi/wattpad.js",
-   "version": "1.0.0-rc.40",
+   "version": "1.0.0-rc.20",
    "description": "Simple Library ( unofficial ) Wattpad API for NodeJS",
    "main": "src/wattpad.js",
    "scripts": {
-      "test": "node test/wattpad.test.js",
+      "test": "node test/index.test.js",
       "prettier": "npx prettier --write ."
    },
    "repository": {

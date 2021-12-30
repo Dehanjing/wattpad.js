@@ -21,10 +21,7 @@ module.exports = function wattpadS(wp, options, BASEURL) {
 					tagList: [],
 					description: $('pre.description-text').text().trim().replace(/  +/g, ''),
 					tableOfContents: {
-						lastUpdate: $('.table-of-contents.hidden-xxs')
-							.find('.table-of-contents__last-updated')
-							.text()
-							.trim(),
+						lastUpdate: $('.table-of-contents.hidden-xxs').find('.table-of-contents__last-updated').text().trim(),
 						firstContent: BASEURL + $('a.btn-primary.read-btn').attr('href'),
 						contents: [],
 					},

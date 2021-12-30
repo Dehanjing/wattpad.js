@@ -1,4 +1,6 @@
-module.exports = function (contentURI) {
+let cheerio = require('cheerio').default;
+
+module.exports = function (wp, contentURI) {
 	return new Promise((resolve, reject) => {
 		wp.get(contentURI)
 			.then((response) => {

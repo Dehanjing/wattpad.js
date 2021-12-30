@@ -1,6 +1,7 @@
 let utils = require('../utils');
+let cheerio = require('cheerio');
 
-module.exports = function (options) {
+module.exports = function (wp, options) {
 	return new Promise((resolve, reject) => {
 		wp.get(options.stories)
 			.then((response) => {
@@ -20,7 +21,7 @@ module.exports = function (options) {
 						page: nextPage ? nextPage : 'Last Page!',
 						hasNext: nextPage ? true : false,
 						content: nextPage
-							? utils.nextContent(nextPage, options)
+							? utils.nextContent(wp, nextPage, options)
 							: () => 'this is the last parts of wattpad ' + story,
 					},
 				};

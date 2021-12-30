@@ -1,10 +1,10 @@
 const getContent = require('./getContent');
 
-const parseContent = (nextPageUrl, options) => async () => {
-	let { status, result } = await getContent(nextPageUrl);
+const parseContent = (wp, nextPageUrl, options) => async () => {
+	let { status, result } = await getContent(wp, nextPageUrl);
 	if (result.nextPage) {
 		let nextPage = result.nextPage;
-		let nextContents = nextContent(result.nextPage, options);
+		let nextContents = nextContent(wp, result.nextPage, options);
 		delete result.nextPage;
 		return {
 			status: status,
@@ -35,8 +35,8 @@ const parseContent = (nextPageUrl, options) => async () => {
 	}
 };
 
-function nextContent(nextPageUrl, options) {
-	return parseContent(nextPageUrl, options);
+function nextContent(wp, nextPageUrl, options) {
+	return parseContent(wp, nextPageUrl, options);
 }
 
 module.exports = nextContent;

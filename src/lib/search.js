@@ -1,4 +1,6 @@
-module.exports = function wattpadSearch(BASEURL, options, hasil = []) {
+const cheerio = require('cheerio').default;
+
+module.exports = function wattpadSearch(wp, BASEURL, options, hasil = []) {
 	let getIndexes;
 	BASEURL = decodeURIComponent(
 		BASEURL +

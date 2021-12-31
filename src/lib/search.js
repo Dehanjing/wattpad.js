@@ -8,7 +8,7 @@ module.exports = function wattpadSearch(wp, BASEURL, options, hasil = []) {
 			options.query +
 			'&mature=true&limit=15&fields=stories(id%2Ctitle%2CvoteCount%2CreadCount%2CcommentCount%2Cdescription%2Cmature%2Ccompleted%2Ccover%2Curl%2CnumParts%2CisPaywalled%2Clength%2Clanguage(id)%2Cuser(name)%2ClastPublishedPart(createDate)%2Cpromoted%2Csponsor(name%2Cavatar)%2Ctags%2Ctracking(clickUrl%2CimpressionUrl%2CthirdParty(impressionUrls%2CclickUrls))%2Ccontest(endDate%2CctaLabel%2CctaURL))%2Ctotal%2Ctags%2CnextUrl'
 	);
-	if (options.hasOwnProperty('url')) BASEURL = options['url'];
+	if (options.hasOwnProperty('search')) BASEURL = options['search'];
 	if (options.hasOwnProperty('getIndexes')) {
 		getIndexes = parseInt(options.getIndexes) || 0;
 		if (isNaN(getIndexes)) throw new TypeError('getIndexes must be typeof number but given input of ' + getIndexes);

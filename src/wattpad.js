@@ -14,34 +14,42 @@ const BASEURL = 'https://www.wattpad.com';
 // WattPads Constructor (class.prototype)
 const WattPads = function WattPads() {
 	this.BASEURL = BASEURL;
-	this.RegExp = {
-		BASEURL: /^(?:http(?:s)):\/\/(?:www\.)?wattpad(\.com)/gi,
-		search: /^(?:http(?:s)):\/\/(?:www\.)?wattpad(\.com)\/(search)/gi,
-		detail: /^(?:http(?:s)):\/\/(?:www\.)?wattpad(\.com)\/(story)+\/(\d+)/gi,
-		stories: /^(?:http(?:s)):\/\/(?:www\.)?wattpad(\.com)\/(\d+)/gi,
-	};
+	this.RegExp = WattPads.RegExp;
 	this.validURI = WattPads.validURI;
 	this.__options__ = WattPads.__options__;
 	this.methods = {};
 	this.options = {};
+	this.methods.prototype = Object.getOwnPropertyNames(WattPads.prototype);
+};
+
+// WattPads EndPoint RegExp (static)
+WattPads.RegExp = {
+	BASEURL: /^(?:http(?:s)):\/\/(?:www\.)?wattpad(\.com)/gi,
+	search: /^(?:http(?:s)):\/\/(?:www\.)?wattpad(\.com)\/(search)/gi,
+	detail: /^(?:http(?:s)):\/\/(?:www\.)?wattpad(\.com)\/(story)+\/(\d+)/gi,
+	stories: /^(?:http(?:s)):\/\/(?:www\.)?wattpad(\.com)\/(\d+)/gi,
+	stalk: /^(?:http(?:s)):\/\/(?:www\.)?wattpad(\.com)\/(search)\/[\d\w\s]+\/(people)/gi,
 };
 
 // WattPads EndPoint URI (static)
 WattPads.validURI = {
 	BASEURL: BASEURL + '/',
 	search: BASEURL + '/search/naruto',
-	url: BASEURL + '/search/naruto',
 	detail: BASEURL + '/story/232343303',
 	stories: BASEURL + '/632122261',
+	stalk: BASEURL + '/search/kaguya+sama/people',
 };
 
 // Options default
 WattPads.__options__ = {
-	query: String,
-	url: String,
-	getIndexes: Number,
-	detail: String,
-	story: String,
+	query: String, // wp.search() <param> options
+	search: String, // wp.search() <url> options
+	getIndexes: Number, // wp.search() <numeric> options
+	detail: String, // wp.detail() <url> options
+	stories: String, // wp.stories() <url> options
+	user: String, // wp.stalk() <user> options
+	userUrl: String, // wp.stalk() <user-url> options
+	userIndexes: Number, // wp.stalk() <numeric> options
 };
 
 /**
@@ -105,7 +113,7 @@ WattPads.prototype.setOptions = function setOptions(keys, values) {
 
 /**
  *
- * Search | main method uses for search story(wattpad)
+ * Search | main method use to search story(wattpad)
  * @param {Null|String|Function|Object} arguments[0] - if options[query] been set, first argument can be null(promise)|callback(error, response, options)|object(options)
  * @param {Null|Function|Object} arguments[1] - if method call is asynchronous second arguments can be null(promise) <callback(error, response, options)|object(options)>
  * @returns {Promise} search result[object]
@@ -118,18 +126,18 @@ WattPads.prototype.search = async function search() {
 	let query = typeof arguments[0] === 'string' ? arguments[0] : '';
 	if (!query && this.options['query']) query = this.options['query'];
 	this.options['query'] = query;
-	if (query.match(this.RegExp['BASEURL']) || (this.options['url'] && this.options['url'].match(this.RegExp['BASEURL']))) {
-		query = query || this.options['url'];
-		if (!this.RegExp['search'].test(query)) throw new URIError('Invalid WattPad [search] URI!');
-		this.options['url'] = query;
-	}
 	if (typeof arguments[2] === 'object' || typeof arguments[1] === 'object' || typeof arguments[0] === 'object') {
 		let thisArguments = arguments[2] || arguments[1] || arguments[0];
 		if (Array.isArray(thisArguments) || thisArguments === null) this;
 		typeof thisArguments === 'object' ? this.set(thisArguments) : '';
 	}
+	if (query.match(this.RegExp['BASEURL']) || (this.options['search'] && this.options['search'].match(this.RegExp['BASEURL']))) {
+		query = query || this.options['search'];
+		if (!this.RegExp['search'].test(query)) throw new URIError('Invalid WattPad [search] URI!');
+		this.options['search'] = query;
+	}
 	if (!this.options['query']) throw new Error('please fill in query || url parameter!');
-	if (this.options['url']) delete this.options['query'];
+	if (this.options['search']) delete this.options['query'];
 	return new Promise((resolve, reject) => {
 		lib.search(wp, this.BASEURL, this.options)
 			.then((response) => {
@@ -138,8 +146,8 @@ WattPads.prototype.search = async function search() {
 				resolve(response);
 			})
 			.catch((error) => {
+				fn(error, null, this.options);
 				reject(error);
-				if (typeof fn === 'function') fn(error, null, this.options);
 			});
 	});
 };
@@ -153,7 +161,7 @@ WattPads.prototype.search = async function search() {
  *
  */
 
-WattPads.prototype.detail = async function () {
+WattPads.prototype.detail = async function detail() {
 	let fn = () => {};
 	this.methods['detail'] = this.detail;
 	let detail = typeof arguments[0] === 'string' ? arguments[0] : '';
@@ -191,7 +199,7 @@ WattPads.prototype.detail = async function () {
  *
  */
 
-WattPads.prototype.stories = async function () {
+WattPads.prototype.stories = async function stories() {
 	let fn = () => {};
 	this.methods['stories'] = this.stories;
 	let stories = typeof arguments[0] === 'string' ? arguments[0] : '';
@@ -208,6 +216,50 @@ WattPads.prototype.stories = async function () {
 	if (!this.RegExp['stories'].test(this.options['stories'])) throw new URIError('Invalid WattPad stories[story] URI');
 	return new Promise((resolve, reject) => {
 		lib.stories(wp, this.options)
+			.then((response) => {
+				fn = typeof arguments[1] === 'function' ? arguments[1] : typeof arguments[0] === 'function' ? arguments[0] : fn;
+				fn(null, response, this.options);
+				resolve(response);
+			})
+			.catch((error) => {
+				fn(error, null, this.options);
+				reject(error);
+			});
+	});
+};
+
+/**
+ *
+ * Stalk | main method for stalking user of wattpad
+ * @param {Null|String|Function|Object} arguments[0] - if options[user] been set, first argument can be null(promise)|callback(error, response, options)|object(options)
+ * @param {Null|Function|Object} arguments[1] - if method call is asynchronous second arguments can be null(promise) <callback(error, response, options)|object(options)>
+ * @returns {Promise} stalk result[object]
+ *
+ */
+
+WattPads.prototype.stalk = async function stalk() {
+	let fn = () => {};
+	this.methods['stalk'] = this.stalk;
+	let user = typeof arguments[0] === 'string' ? arguments[0] : '';
+	if (!user && this.options['user']) user = this.options['user'];
+	this.options['user'] = user;
+	if (typeof arguments[2] === 'object' || typeof arguments[1] === 'object' || typeof arguments[0] === 'object') {
+		let thisArguments = arguments[2] || arguments[1] || arguments[0];
+		if (Array.isArray(thisArguments) || thisArguments === null) this;
+		typeof thisArguments === 'object' ? this.set(thisArguments) : '';
+	}
+	if (
+		user.match(this.RegExp['BASEURL']) ||
+		(this.options['userUrl'] && this.options['userUrl'].match(this.RegExp['BASEURL']))
+	) {
+		user = user || this.options['userUrl'];
+		if (!this.RegExp['stalk'].test(user)) throw new URIError('Invalid WattPad [user] URI!');
+		this.options['userUrl'] = user.split(' ').join('+');
+	}
+	if (!this.options['user']) throw new Error('please fill in user || userUrl parameter!');
+	if (this.options['userUrl']) delete this.options['user'];
+	return new Promise((resolve, reject) => {
+		lib.stalk(wp, this.options, this.BASEURL)
 			.then((response) => {
 				fn = typeof arguments[1] === 'function' ? arguments[1] : typeof arguments[0] === 'function' ? arguments[0] : fn;
 				fn(null, response, this.options);

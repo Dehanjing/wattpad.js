@@ -6,7 +6,7 @@ const parseContent = (wp, previousPageUrl, options) => async () => {
 			.then((response) => {
 				return resolve(response);
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => reject(error));
 	});
 };
 

@@ -7,7 +7,7 @@ const parseContent = (wp, nextPageUrl, options) => async () => {
 			.then((response) => {
 				return resolve(response);
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => reject(error));
 	});
 };
 

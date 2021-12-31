@@ -1,10 +1,10 @@
-## Wattpad API
+## Wattpad Scrapper
 
 > **_Simple Wattpad scrapper library_**
 
 ```diff
 @@ Created on 24-12-21 | Dehanjing @@
-+ Update: 30-12-21 | Dehanjing
++ Update: 1-01-22 | Dehanjing
 ! happy new year! xixixi
 ```
 
@@ -36,7 +36,7 @@ let wattpad = new WattPads();
 })();
 ```
 
-more examples at [here](https://github.com/Dehanjing/wattpad.js/blob/master/test/wattpad.test.js)
+more examples at **[here](https://github.com/Dehanjing/wattpad.js/blob/master/test/wattpad.test.js)**
 
 ## Information
 

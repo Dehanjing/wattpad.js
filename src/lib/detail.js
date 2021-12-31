@@ -1,6 +1,6 @@
 const cheerio = require('cheerio').default;
 
-module.exports = function wattpadS(wp, options, BASEURL) {
+module.exports = function wattpadDetail(wp, options, BASEURL) {
 	return new Promise((resolve, reject) => {
 		wp.get(options.detail)
 			.then(async (response) => {

@@ -2,7 +2,7 @@ let utils = require('../utils');
 let cheerio = require('cheerio');
 const BASEURL = 'https://www.wattpad.com';
 
-module.exports = function (wp, options) {
+module.exports = function wattpadStories(wp, options) {
 	return new Promise((resolve, reject) => {
 		wp.get(options.stories)
 			.then((response) => {

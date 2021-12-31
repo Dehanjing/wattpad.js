@@ -1,0 +1,1 @@
+user_message = https://www.wattpad.com/v4/users/<user>/messages?offset=20&limit=10&newest_id=&fields=messages%28id%2Cbody%2CcreateDate%2Cfrom%2CnumReplies%2CisReply%2ClatestReplies%2CisOffensive%2Creplies%29%2Ctotal%2CnextUrl

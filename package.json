@@ -1,6 +1,6 @@
 {
    "name": "@dhnapi/wattpad.js",
-   "version": "1.0.0-rc.10",
+   "version": "1.0.0-rc.v-30",
    "description": "Simple Library ( unofficial ) Wattpad API for NodeJS",
    "main": "src/wattpad.js",
    "scripts": {
@@ -9,15 +9,15 @@
    },
    "repository": {
       "type": "git",
-      "url": "git+https://github.com/Dehanjing/wattpad.js.git"
+      "url": "git://github.com/Dehanjing/wattpad.js.git"
    },
    "files": [
       "src"
    ],
    "keywords": [
-      "Wattpad",
-      "Wattpad-Api",
-      "Scrapper",
+      "wattpad",
+      "wattpad-api",
+      "scrapper",
       "dhn-api"
    ],
    "author": "Dehanjing",

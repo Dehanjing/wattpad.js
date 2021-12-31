@@ -6,10 +6,12 @@ const wattpad = new WattPads();
 // 1. use .set() method
 wattpad.set({
    query: "naruto", // search required option!
-   url: WattPads.validURI.url, // parse content (search) option!,
+   url: WattPads.validURI.url, // parse content (search) option!
    getIndexes: 3, // get instant indexes of result[array]
    detail: WattPads.validURI.detail, // get full information of stories
    stories: WattPads.validURI.stories, // stories required option!
+   user: "kaguya sama", // stalk required option to stalk wattpad user!
+   userUrl: wattpad.validURI.stalk // parse content (stalk) option
 });
 // 2. set key and value use .set("key", "value")
 wattpad.set("query", "fury");
@@ -28,7 +30,8 @@ console.log(wattpad.validURI);
       search: 'https://www.wattpad.com/search/naruto',
       url: 'https://www.wattpad.com/search/naruto',
       detail: 'https://www.wattpad.com/story/232343303',
-      stories: 'https://www.wattpad.com/632122261'
+      stories: 'https://www.wattpad.com/632122261',
+      stalk: 'https://www.wattpad.com/search/kaguya+sama/people',
    }
 */
 
@@ -54,6 +57,13 @@ wattpad.detail((error, response, options) => {
 wattpad.stories("https://www.wattpad.com/917284601-naruto-life-sadness")
 .then((response) => console.log(response))
 .catch((error) => console.error(error.stack));
+
+// TODO: example of stalk method
+
+wattpad.stalk({ user: "kaguya sama", userIndexes: 3 }, function (error, response, options) {
+   if (error) return console.log(error.stack);
+   console.log(response);
+});
 
 // TODO: example of method request
 

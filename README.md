@@ -26,7 +26,7 @@
 
 ```javascript
 'use strict';
-const WattPads = require('@dhnapi/news-api');
+const WattPads = require('@dhnapi/wattpad.js');
 let wattpad = new WattPads();
 
 (async () => {

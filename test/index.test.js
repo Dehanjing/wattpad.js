@@ -1,8 +1,9 @@
 const WattPads = require("../src/wattpad");
 let wattpad = new WattPads();
 
-wattpad.stalk((e, r, o) => {
-   console.log(r);
-}, {
-   user: "kaguya sama"
-});
+wattpad.stalk({
+   user: "kaguya",
+   userIndexes: 3
+})
+.then(console.log)
+.catch(console.error);

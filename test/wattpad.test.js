@@ -35,6 +35,14 @@ console.log(wattpad.validURI);
    }
 */
 
+// TODO: example of parse method
+
+// you can pass any wattpad url [only that has prefetched data]
+wattpad.parse("https://www.wattpad.com/stories/killmill", function(error, response, options) {
+   if (error) return console.log(error.stack);
+   console.log(response);
+});
+
 // TODO: example of search method
 
 wattpad.set({
@@ -61,6 +69,20 @@ wattpad.stories("https://www.wattpad.com/917284601-naruto-life-sadness")
 // TODO: example of stalk method
 
 wattpad.stalk({ user: "kaguya sama", userIndexes: 3 }, function (error, response, options) {
+   if (error) return console.log(error.stack);
+   console.log(response);
+});
+
+// TODO: example of userMetadata method
+
+// 1. use user url wattpad
+wattpad.userMetadata("https://www.wattpad.com/user/Tobi__", function (error, response, options) {
+   if (error) return console.log(error.stack);
+   console.log(response);
+});
+
+// 2. use user username wattpad
+wattpad.userMetadata("Tobi__", function (error, response, options) {
    if (error) return console.log(error.stack);
    console.log(response);
 });

@@ -2,7 +2,7 @@ const cheerio = require('cheerio').default;
 let utils = require('../utils');
 
 module.exports = function wattpadStalk(wp, options, BASEURL, hasil = []) {
-	let userIndexes;
+	let getIndexes;
 	let BASEURI = BASEURL;
 	BASEURL = decodeURIComponent(
 		BASEURL +
@@ -10,10 +10,13 @@ module.exports = function wattpadStalk(wp, options, BASEURL, hasil = []) {
 			options.user +
 			'&limit=20&offset=0&fields=username%2Cname%2Cavatar%2Cdescription%2CnumLists%2CnumFollowers%2CnumStoriesPublished%2Cbadges%2Cfollowing%2Cstories'
 	);
-	if (options.hasOwnProperty('userUrl')) BASEURL = options['userUrl'];
-	if (options.hasOwnProperty('userIndexes')) {
-		userIndexes = parseInt(options.userIndexes) || 0;
-		if (isNaN(userIndexes)) throw new TypeError('userIndexes must be typeof number but given input of ' + userIndexes);
+	if (options.hasOwnProperty('userUrl')) {
+		BASEURL = options['userUrl'];
+		options.user = /(?:http(?:s)):\/\/(?:www\.)?wattpad(\.com)\/(search)\/([\d\w\s].+)\/(people)/gi.exec(BASEURL)[3];
+	}
+	if (options.hasOwnProperty('getIndexes')) {
+		getIndexes = parseInt(options.getIndexes) || 0;
+		if (isNaN(getIndexes)) throw new TypeError('getIndexes must be typeof number but given input of ' + getIndexes);
 	}
 	return new Promise((resolve, reject) => {
 		wp.get(BASEURL)
@@ -22,9 +25,14 @@ module.exports = function wattpadStalk(wp, options, BASEURL, hasil = []) {
 					hasil = response.data.map((data) => {
 						data.url = BASEURI + '/user/' + data.username;
 						data.userPage = utils.userPage(wp, data.url, options);
+						data.followingPage = utils.userFollowingPage(
+							wp,
+							utils.parseApi('user_following').replace('<user>', data.username),
+							options
+						);
 						return data;
 					});
-					if (!userIndexes) {
+					if (!getIndexes) {
 						resolve({
 							status: response.status,
 							total: hasil.length,
@@ -32,20 +40,17 @@ module.exports = function wattpadStalk(wp, options, BASEURL, hasil = []) {
 							result: hasil,
 						});
 					}
-					if (userIndexes > hasil.length)
+					if (getIndexes > hasil.length)
 						throw new RangeError(
-							'could not find wattpad story at index position ' +
-								userIndexes +
-								' from result length ' +
-								hasil.length
+							'could not find wattpad story at index position ' + getIndexes + ' from result length ' + hasil.length
 						);
 					return resolve({
 						status: response.status,
 						total: hasil.length,
-						indexes: userIndexes,
+						indexes: getIndexes,
 						options: options,
-						result: hasil[userIndexes - 1],
-						raw: JSON.stringify(hasil[userIndexes - 1], null, 2),
+						result: hasil[getIndexes - 1],
+						raw: JSON.stringify(hasil[getIndexes - 1], null, 2),
 					});
 				}
 				let $ = cheerio.load(response.data);
@@ -54,15 +59,20 @@ module.exports = function wattpadStalk(wp, options, BASEURL, hasil = []) {
 					let queries = $('div.search-term').text().trim().split(' ').join('+');
 					let queriesRegExp = new RegExp(queries, 'gi');
 					if (queriesRegExp.test(strScript)) {
-						let parseScript = JSON.parse(strScript.split(' = ')[1].split(/\n/g)[0].slice(0, -1));
+						let parseScript = JSON.parse(strScript.split('prefetched = ')[1].split(/\n/g)[0].split(/(;$)/)[0]);
 						hasil = parseScript[Object.keys(parseScript)[1]].data.map((data) => {
 							data.url = BASEURI + '/user/' + data.username;
 							data.userPage = utils.userPage(wp, data.url, options);
+							data.followingPage = utils.userFollowingPage(
+								wp,
+								utils.parseApi('user_following').replace('<user>', data.username),
+								options
+							);
 							return data;
 						});
 					}
 				});
-				if (!userIndexes) {
+				if (!getIndexes) {
 					return resolve({
 						status: response.status,
 						total: hasil.length,
@@ -70,17 +80,17 @@ module.exports = function wattpadStalk(wp, options, BASEURL, hasil = []) {
 						result: hasil,
 					});
 				}
-				if (userIndexes > hasil.length)
+				if (getIndexes > hasil.length)
 					throw new RangeError(
-						'could not find wattpad story at index position ' + userIndexes + ' from result length ' + hasil.length
+						'could not find wattpad story at index position ' + getIndexes + ' from result length ' + hasil.length
 					);
 				return resolve({
 					status: response.status,
 					total: hasil.length,
-					indexes: userIndexes,
+					indexes: getIndexes,
 					options: options,
-					result: hasil[userIndexes - 1],
-					raw: JSON.stringify(hasil[userIndexes - 1], null, 2),
+					result: hasil[getIndexes - 1],
+					raw: JSON.stringify(hasil[getIndexes - 1], null, 2),
 				});
 			})
 			.catch((error) => {

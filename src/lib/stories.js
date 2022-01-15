@@ -12,13 +12,14 @@ module.exports = function wattpadStories(wp, options) {
 				let story = $('.panel.panel-reading.text-center > h1').text().trim();
 				let current = {};
 				let previous;
+				let previousPage = false;
 				let nextPageTitle = '';
 				$('ul.table-of-contents > li').filter(function (index, elem) {
 					if ($(this).attr('class').includes('active')) {
 						current.part = index + 1;
 						current.pageTitle = $(this).find('.part-title').text().trim();
 						current.page = BASEURL + $(this).find('a.on-navigate').attr('href');
-						let previousPage = $(this).prev().find('a.on-navigate').attr('href');
+						previousPage = $(this).prev().find('a.on-navigate').attr('href');
 						previous = previousPage
 							? utils.previousContent(wp, BASEURL + previousPage, options)
 							: () => 'this is the first parts of wattpad ' + mainStory;
@@ -28,7 +29,7 @@ module.exports = function wattpadStories(wp, options) {
 						previous.content = previousPage
 							? utils.previousContent(wp, BASEURL + previousPage, options)
 							: () => 'this is the first part of wattpad ' + mainStory;
-						current.hasPrevious = previous.page ? true : false || false;
+						current.hasPrevious = previousPage ? true : false || false;
 						current.hasNext = nextPage ? true : false;
 						nextPageTitle = $(this).next().find('.part-title').text().trim();
 					}

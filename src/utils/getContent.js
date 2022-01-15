@@ -7,11 +7,11 @@ module.exports = function (wp, contentURI, options, ...args) {
 			.then((response) => {
 				const $ = cheerio.load(response.data);
 				let nextPage = $('a.on-navigate.next-part-link').attr('href');
-				let previousPage;
 				let mainStory = $('span.toc-full > span.info > h2.title.h5').text().trim();
 				let story = $('.panel.panel-reading.text-center > h1').text().trim();
 				let current = {};
 				let previous;
+				let previousPage = false;
 				let nextPageTitle = '';
 				$('ul.table-of-contents > li').filter(function (index, elem) {
 					if ($(this).attr('class').includes('active')) {
@@ -28,7 +28,7 @@ module.exports = function (wp, contentURI, options, ...args) {
 						previous.content = previousPage
 							? args[0](wp, BASEURL + previousPage, options)
 							: () => 'this is the first part of wattpad ' + mainStory;
-						current.hasPrevious = previous.page ? true : false || false;
+						current.hasPrevious = previousPage ? true : false || false;
 						current.hasNext = nextPage ? true : false;
 						nextPageTitle = $(this).next().find('.part-title').text().trim();
 					}

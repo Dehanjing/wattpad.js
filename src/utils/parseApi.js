@@ -1,5 +1,5 @@
 let fs = require('fs');
-let apiTXT = fs.readFileSync(process.cwd() + '/api.txt').toString();
+let apiTXT = fs.readFileSync(__dirname + '/api.txt').toString();
 
 module.exports = function parseApi(keys, object = {}) {
 	let parser = apiTXT.split('\n');
